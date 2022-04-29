@@ -17,7 +17,6 @@ export function SignInButton(){
         <button className={styles.signInButton}>
             <FaGithub color='#EBA417' />
             Sign In with Github
-            <FiX />
         </button>
     )
 }
