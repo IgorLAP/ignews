@@ -26,5 +26,9 @@
 
     svg + svg {
         margin-left: 1rem;
+
+        &:hover {
+            filter: brightness(.7);
+        }
     }
 }
