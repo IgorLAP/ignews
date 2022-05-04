@@ -40,7 +40,7 @@ export default async function Subscribe (req: NextApiRequest, res: NextApiRespon
                     q.Ref(q.Collection('users'), user.ref.id),
                     {
                         data: {
-                            stripe_costumer_id: stripeCustomer.id
+                            stripe_customer_id: stripeCustomer.id
                         }
                     }
                 )
@@ -48,8 +48,6 @@ export default async function Subscribe (req: NextApiRequest, res: NextApiRespon
 
             customerId = stripeCustomer.id;
         }
-
-        
 
         const stripeCheckoutSession = await stripe.checkout.sessions.create({
             customer: customerId,
@@ -67,6 +65,6 @@ export default async function Subscribe (req: NextApiRequest, res: NextApiRespon
         return res.status(200).json({ sessionId: stripeCheckoutSession.id })
     } else {
         res.setHeader('Allow', 'POST');
-        res.status(405).end('Method not allowed')
+        res.status(405).end('Method not allowed');
     }
 }
