@@ -1,0 +1,21 @@
+{
+  "id": "d51cebb2-b904-4e39-a507-3793e6e40003",
+  "uid": "placeat-sunt-est",
+  "type": "publication",
+  "data": {
+    "title": [
+      {
+        "type": "heading1",
+        "text": "Productize user-centric paradigms",
+        "spans": []
+      }
+    ],
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Anim officia culpa laboris magna do magna anim proident labore sunt Lorem quis.",
+        "spans": []
+      }
+    ]
+  }
+}
