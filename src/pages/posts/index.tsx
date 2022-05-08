@@ -1,7 +1,22 @@
-import styles from './styles.module.scss';
+import * as prismic from '@prismicio/client';
+import { asText } from '@prismicio/helpers';
+import { GetStaticProps } from 'next';
 import Head from 'next/head';
 
-export default function Posts(){
+import { createClient } from '../../services/prismicio';
+import styles from './styles.module.scss';
+
+type Post = {
+    slug: string;
+    title: string;
+    preview: string;
+    updatedAt: string;
+}
+interface PostsProps {
+    posts: Post[];
+}
+
+export default function Posts({ posts }: PostsProps){
     return (
         <>
             <Head>
@@ -9,23 +24,44 @@ export default function Posts(){
             </Head>
             <main className={styles.container}>
                 <div className={styles.postList}>
-                    <a href=''>
-                        <time>05 de maio de 2022</time>
-                        <strong>Narutinho testando noticias</strong>
-                        <p>Os méritos passam pelo tratamento aos “fan services” à maneira feita na animação Homem-aranha no Aranhaverso, sendo assim, ter a jornada de</p>
-                    </a>
-                    <a href=''>
-                        <time>05 de maio de 2022</time>
-                        <strong>Narutinho testando noticias</strong>
-                        <p>Os méritos passam pelo tratamento aos “fan services” à maneira feita na animação Homem-aranha no Aranhaverso, sendo assim, ter a jornada de</p>
-                    </a>
-                    <a href=''>
-                        <time>05 de maio de 2022</time>
-                        <strong>Narutinho testando noticias</strong>
-                        <p>Os méritos passam pelo tratamento aos “fan services” à maneira feita na animação Homem-aranha no Aranhaverso, sendo assim, ter a jornada de</p>
-                    </a>
+                    {posts.map((post, index) => (
+                        <a key={index} href={post.slug}>
+                            <time>{post.updatedAt}</time>
+                            <strong>{post.title}</strong>
+                            <p>{post.preview}</p>
+                        </a>
+                    ))}
                 </div>
             </main>
         </>
     )
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+   const client = createClient();
+
+   const response = await client.get({
+    predicates: [prismic.predicate.at('document.type', 'publication')],
+    fetch: ['publication.title', 'publication.content'],
+    pageSize: 100
+   });
+
+   const posts = response.results.map(i => {
+       return {
+           slug: i.uid,
+           title: asText(i.data.title),
+           preview: i.data.content.find(content => content.type == 'paragraph')?.text.split('\n')[0] ?? '',
+           updatedAt: new Date(i.last_publication_date).toLocaleDateString('pt-BR', {
+               day: '2-digit',
+               month: 'long',
+               year: 'numeric'
+           })
+       }
+   })
+
+   return {
+       props: {
+           posts
+       }
+   }
 }
