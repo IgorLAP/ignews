@@ -1,10 +1,8 @@
-# ig.news
+# IG News
 
-Sistema de inscrições para visualização de posts, aplicando conceitos fundamentais do React.JS e Next.JS
+Sistema de inscrições para visualização de posts, aplicando conceitos fundamentais do React.JS e Next.JS.
 
-<p align="center">
-<img src="https://c.tenor.com/XasjKGMk_wAAAAAC/load-loading.gif" height="140" alt="loading gif" />
-</p>
+<img src="https://i.imgur.com/KWSP3Kq.png">
 
 <br />
 
@@ -16,6 +14,7 @@ Sistema de inscrições para visualização de posts, aplicando conceitos fundam
     - Static Site Generation (SSG)
 - TypeScript
 - Sass
+- Jest
 
 > ## API's
 
