@@ -7,5 +7,9 @@ module.exports = {
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest"
   },
+  // library 'identity-obj-proxy' handles non transpillable to js files
+  moduleNameMapper: {
+    "\\.(scss|css|sass|svg|jpg|png|jpeg)$": "identity-obj-proxy",
+  },
   testEnvironment: "jsdom"
 };
