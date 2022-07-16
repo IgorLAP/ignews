@@ -1,12 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import { useSession } from 'next-auth/react';
 import React from 'react';
-import * as nextAuth from 'next-auth/react'
 
 import { SignInButton } from '.';
 
+jest.mock('next-auth/react')
+
 describe('SignInButton component', () => {
   it('should render "Sign In with Github button" if user is unauthenticated', () => {
-    jest.spyOn(nextAuth, 'useSession')
+    jest.mocked(useSession)
       .mockReturnValueOnce({ data: null, status: 'unauthenticated' })
 
     render(<SignInButton />)
@@ -15,7 +17,7 @@ describe('SignInButton component', () => {
   })
 
   it('should display username in button if user is authenticated', () => {
-    jest.spyOn(nextAuth, 'useSession')
+    jest.mocked(useSession)
       .mockReturnValueOnce({
         data: {
           user: { name: 'John Doe', email: 'johndoe@gmail.com' },
