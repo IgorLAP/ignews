@@ -52,7 +52,6 @@ describe('Post page', () => {
     const prismicCreateClientMock = jest.mocked(createClient)
     prismicCreateClientMock.mockReturnValueOnce({
       getByUID: jest.fn().mockResolvedValueOnce({
-        slug: 'my-new-post',
         data: {
           title: [{ type: 'heading', text: 'My New Post' }],
           content: [{ type: 'paragraph', text: 'Post Content' }],

@@ -1,4 +1,4 @@
-import { asHTML, asText } from '@prismicio/helpers';
+import { asText } from '@prismicio/helpers';
 import { GetStaticProps } from 'next';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
@@ -18,15 +18,13 @@ interface PostPreviewProps {
   }
 }
 
-export default function PostPreview ({ post }: PostPreviewProps) {
+export default function PostPreview({ post }: PostPreviewProps) {
   const { data } = useSession();
-  const { push } = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
-    console.log(data)
-    if(data?.activeSubscription) {
-      console.log(data?.activeSubsciption)
-      push(`/posts/${post.slug}`)
+    if (data?.activeSubscription) {
+      router.push(`/posts/${post.slug}`)
     }
   }, [data])
 
@@ -39,9 +37,9 @@ export default function PostPreview ({ post }: PostPreviewProps) {
         <article className={styles.article}>
           <h1>{post.title}</h1>
           <time>{post.updatedAt}</time>
-          <div 
+          <div
             className={`${styles.content} ${styles.previewContent}`}
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: post.content }}
           />
           <div className={styles.continueReading}>
             Wanna continue reading?
@@ -66,7 +64,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params;
   const prismic = createClient()
   const response = await prismic.getByUID('publication', slug as string, {})
-  
+
   const post = {
     slug,
     title: asText(response.data.title),
