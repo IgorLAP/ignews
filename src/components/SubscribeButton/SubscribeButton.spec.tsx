@@ -1,12 +1,16 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import React from 'react';
 
 import { SubscribeButton } from '.';
+import { api } from '../../services/api';
+import { getStripeJs } from '../../services/stripe-js';
 
 jest.mock('next-auth/react')
 jest.mock('next/router')
+jest.mock('../../services/stripe-js')
+jest.mock('../../services/api')
 
 describe('SubscribeButton Component', () => {
   it('renders correctly', () => {
@@ -59,5 +63,61 @@ describe('SubscribeButton Component', () => {
 
     // se a função foi chamada com o parametro '/posts'
     expect(pushMock).toHaveBeenCalledWith('/posts')
+  })
+
+  it('correctly send subscribe request and redirect to checkout', async () => {
+    const useSessionMock = jest.mocked(useSession)
+    const functionMock = jest.fn()
+    const getStripeJSMock = jest.mocked(getStripeJs)
+    const apiPostMock = jest.mocked(api.post)
+
+    useSessionMock.mockReturnValueOnce({
+      data: {
+        user: {
+          name: 'John Doe'
+        }
+      }
+    } as any)
+
+    apiPostMock.mockResolvedValueOnce({
+      data: {
+        sessionId: 'fake-session-id'
+      }
+    })
+
+    getStripeJSMock.mockResolvedValueOnce({
+      redirectToCheckout: functionMock
+    } as any)
+
+    render(<SubscribeButton />)
+    const subscribeButton = screen.getByText('Subscribe Now')
+    fireEvent.click(subscribeButton)
+
+    await waitFor(
+      () => expect(functionMock).toHaveBeenCalledWith({ sessionId: 'fake-session-id' })
+    )
+  })
+
+  it('throws an error if subscribe request fails', async () => {
+    const useSessionMock = jest.mocked(useSession)
+
+    useSessionMock.mockReturnValueOnce({
+      data: {
+        user: {
+          name: 'John Doe'
+        }
+      }
+    } as any)
+
+    const windowAlertMock = window.alert = jest.fn()
+
+    render(<SubscribeButton />)
+    const subscribeButton = screen.getByText('Subscribe Now')
+    fireEvent.click(subscribeButton)
+
+    waitFor(() => {
+      expect(windowAlertMock).toBeCalled()
+      windowAlertMock.mockClear()
+    })
   })
 })
